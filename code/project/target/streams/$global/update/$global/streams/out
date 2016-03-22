@@ -1,4 +1,4 @@
-[0m[[0minfo[0m] [0mUpdating {file:/Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/}code-build...[0m
+[0m[[0minfo[0m] [0mUpdating {file:/Users/Buckbeak/BigData/BDH-Project/code/project/}code-build...[0m
 [0m[[0mdebug[0m] [0m:: resolving dependencies :: default#code-build;0.1-SNAPSHOT[0m
 [0m[[0mdebug[0m] [0m	confs: [compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool][0m
 [0m[[0mdebug[0m] [0m	validate = true[0m
@@ -26,7 +26,7 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies for default#code-build;0.1-SNAPSHOT [provided][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#code-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->default(compile)][0m
 [0m[[0minfo[0m] [0mResolving org.scala-lang#scala-library;2.10.4 ...[0m
-[0m[[0mdebug[0m] [0msbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@549a3c6f[0m
+[0m[[0mdebug[0m] [0msbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@45f00945[0m
 [0m[[0mdebug[0m] [0msbt-chain: module revision found in cache: org.scala-lang#scala-library;2.10.4[0m
 [0m[[0mdebug[0m] [0m	found org.scala-lang#scala-library;2.10.4 in sbt-chain[0m
 [0m[[0mdebug[0m] [0m	[2.10.4] org.scala-lang#scala-library;2.10.4[0m
@@ -1835,19 +1835,19 @@
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-sbt#apply-macro;0.13.7!apply-macro.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-lang#jline;2.10.4!jline.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.fusesource.jansi#jansi;1.4!jansi.jar[0m
-[0m[[0mdebug[0m] [0m:: resolution report :: resolve 1416ms :: artifacts dl 38ms[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT compile produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-compile.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT runtime produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-runtime.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT test produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-test.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT provided produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-provided.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT optional produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-optional.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT compile-internal produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-compile-internal.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT runtime-internal produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-runtime-internal.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT test-internal produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-test-internal.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT plugin produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-plugin.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT sources produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-sources.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT docs produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-docs.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT pom produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-pom.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT scala-tool produced in /Users/Buckbeak/BigData/bigdata-bootcamp/homework4/code/project/target/resolution-cache/reports/default-code-build-scala-tool.xml[0m
-[0m[[0mdebug[0m] [0m	resolve done (1416ms resolve - 38ms download)[0m
+[0m[[0mdebug[0m] [0m:: resolution report :: resolve 1151ms :: artifacts dl 63ms[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT compile produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-compile.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT runtime produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-runtime.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT test produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-test.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT provided produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-provided.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT optional produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-optional.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT compile-internal produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-compile-internal.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT runtime-internal produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-runtime-internal.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT test-internal produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-test-internal.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT plugin produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-plugin.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT sources produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-sources.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT docs produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-docs.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT pom produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-pom.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#code-build;0.1-SNAPSHOT scala-tool produced in /Users/Buckbeak/BigData/BDH-Project/code/project/target/resolution-cache/reports/default-code-build-scala-tool.xml[0m
+[0m[[0mdebug[0m] [0m	resolve done (1151ms resolve - 63ms download)[0m
 [0m[[0minfo[0m] [0mDone updating.[0m
