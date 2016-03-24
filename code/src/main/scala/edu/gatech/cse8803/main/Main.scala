@@ -24,6 +24,8 @@ import org.apache.spark.mllib.tree.model.RandomForestModel
 import org.apache.spark.mllib.tree.GradientBoostedTrees
 import org.apache.spark.mllib.tree.configuration.BoostingStrategy
 import org.apache.spark.mllib.tree.model.GradientBoostedTreesModel
+import scala.collection.mutable
+import org.apache.spark.mllib.clustering.LDA
 
 
 object Main {
@@ -40,7 +42,7 @@ object Main {
     /** initialize loading of data */
     val (patient, medication, labResult, diagnostic) = loadRddRawData(sqlContext)
 
-    List("data/sofa.csv", "data/sapsii.csv", "data/saps.csv", "data/apsiii.csv")
+    List("data/sofa.csv", "data/sapsii.csv", "data/saps.csv", "data/apsiii.csv", "data/topics.csv")
       .foreach(CSVUtils.loadCSVAsTable(sqlContext, _))
 
     val SOFA = sqlContext.sql( // fix this
@@ -72,34 +74,95 @@ object Main {
       """.stripMargin)
       .map(r => (r(0).toString, r(1).toString.toInt))
 
+    val topic = sqlContext.sql( // fix this
+      """
+        |SELECT hadm_id, docs
+        |FROM topics
+      """.stripMargin)
+      .map(r => (r(0).toString, r(1).toString))
 
-    val x = patient.map(line => if (line.deathtime.isEmpty) (line.hadmID, 0) else (line.hadmID, 1) ).join(SOFA).join(SAPS).join(SAPSII).join(APSIII).map(r => (r._1, r._2._1._1._1._1, r._2._1._1._1._2, r._2._1._1._2 , r._2._1._2 ,r._2._2))
+    //Topic Modelling Start
+    // Load documents from text files, 1 document per file
+    val corpus = topic
+
+    // Split each document into a sequence of terms (words)
+    val tokenized =
+      corpus.map(line => (line._1 , line._2.toLowerCase.split("\\s"))).map(line => (line._1, line._2.filter(_.length > 3).filter(_.forall(java.lang.Character.isLetter)).toSeq))
+
+    // Choose the vocabulary.
+    //   termCounts: Sorted list of (term, termCount) pairs
+    val termCounts: Array[(String, Long)] =
+      tokenized.flatMap(_._2.map(_ -> 1L)).reduceByKey(_ + _).collect().sortBy(-_._2)
+    //   vocabArray: Chosen vocab (removing common terms)
+    val numStopwords = 20
+    val vocabArray: Array[String] =
+      termCounts.takeRight(termCounts.size - numStopwords).map(_._1)
+    //   vocab: Map term -> term index
+    val vocab: Map[String, Int] = vocabArray.zipWithIndex.toMap
+
+    // Convert documents into term count vectors
+    val documents: RDD[(Long, Vector)] =
+      tokenized.map { case (id, tokens) =>
+        val counts = new mutable.HashMap[Int, Double]()
+        tokens.foreach { term =>
+          if (vocab.contains(term)) {
+            val idx = vocab(term)
+            counts(idx) = counts.getOrElse(idx, 0.0) + 1.0
+          }
+        }
+        (id.toLong, Vectors.sparse(vocab.size, counts.toSeq))
+      }
+
+    // Set LDA parameters
+    val numTopics = 50
+    val lda = new LDA().setK(numTopics).setMaxIterations(30)
+
+    val ldaModel = lda.run(documents)
+    val avgLogLikelihood = ldaModel.logLikelihood / documents.count()
+
+    val ld = ldaModel.topicDistributions.map(line=> (line._1.toString, (1, line._2.toArray.toList)))
+
+//    // Print topics, showing top-weighted 10 terms for each topic.
+//    val topicIndices = ldaModel.describeTopics(maxTermsPerTopic = 10)
+//    topicIndices.foreach { case (terms, termWeights) =>
+//      println("TOPIC:")
+//      terms.zip(termWeights).foreach { case (term, weight) =>
+//        println(s"${vocabArray(term.toInt)}\t$weight")
+//      }
+//      println()
+//    }
+
+    val x = patient.map(line => if (line.deathtime.isEmpty) (line.hadmID, 0) else (line.hadmID, 1) ).join(SOFA).join(SAPS).join(SAPSII).join(APSIII).map(r => (r._1, (r._2._1._1._1._1.toDouble, List( r._2._1._1._1._2.toDouble, r._2._1._1._2.toDouble , r._2._1._2.toDouble ,r._2._2.toDouble))))
+
+    val f = x.join(ld).map(line => (line._1 , line._2._1._1, line._2._1._2 ::: line._2._2._2)).map(line => (line._1, line._2, line._3.toArray))
+
+    val dat = f.map(line => LabeledPoint(line._2.toDouble, Vectors.dense(line._3)))
 
 
-    val dat = x.map(line => LabeledPoint(line._2, Vectors.dense(line._3, line._4, line._5, line._6)))
+    // Prediction
 
     val splits = dat.randomSplit(Array(0.7, 0.3), seed = 11L)
     val training = splits(0).cache()
     val test = splits(1)
 
-//    // Run training algorithm to build the model 0.733
-//    val numIterations = 250
-//    val model = SVMWithSGD.train(training, numIterations)
-//
-//    // Clear the default threshold.
-//    model.clearThreshold()
-//
-//    // Compute raw scores on the test set.
-//    val scoreAndLabels = test.map { point =>
-//      val score = model.predict(point.features)
-//      (score, point.label)
-//    }
-//
-//    // Get evaluation metrics.
-//    val metrics = new BinaryClassificationMetrics(scoreAndLabels)
-//    val auROC = metrics.areaUnderROC()
-//
-//    println("Area under ROC = " + auROC)
+    // Run training algorithm to build the model 0.733
+    val numIterations = 350
+    val model = SVMWithSGD.train(training, numIterations)
+
+    // Clear the default threshold.
+    model.clearThreshold()
+
+    // Compute raw scores on the test set.
+    val scoreAndLabels = test.map { point =>
+      val score = model.predict(point.features)
+      (score, point.label)
+    }
+
+    // Get evaluation metrics.
+    val metrics = new BinaryClassificationMetrics(scoreAndLabels)
+    val auROC = metrics.areaUnderROC()
+
+    println("Area under ROC = " + auROC)
 
 
 //    // Train a RandomForest model. 0.721
@@ -118,29 +181,29 @@ object Main {
 
     // Train a GradientBoostedTrees model.
     // The defaultParams for Classification use LogLoss by default.
-    val boostingStrategy = BoostingStrategy.defaultParams("Classification")
-    boostingStrategy.numIterations = 10 // Note: Use more iterations in practice.
-    boostingStrategy.treeStrategy.numClasses = 2
-    boostingStrategy.treeStrategy.maxDepth = 30
-    // Empty categoricalFeaturesInfo indicates all features are continuous.
-    boostingStrategy.treeStrategy.categoricalFeaturesInfo = Map[Int, Int]()
-
-    val model = GradientBoostedTrees.train(training, boostingStrategy)
-
-
-    // Evaluate model on test instances and compute test error
-    val labelAndPreds = test.map { point =>
-      val prediction = model.predict(point.features)
-      (prediction, point.label)
-    }
-
-    labelAndPreds.foreach(println)
-
-    // Get evaluation metrics.
-    val metrics = new BinaryClassificationMetrics(labelAndPreds)
-    val auROC = metrics.areaUnderROC()
-
-    println("Area under ROC = " + auROC)
+//    val boostingStrategy = BoostingStrategy.defaultParams("Classification")
+//    boostingStrategy.numIterations = 10 // Note: Use more iterations in practice.
+//    boostingStrategy.treeStrategy.numClasses = 2
+//    boostingStrategy.treeStrategy.maxDepth = 30
+//    // Empty categoricalFeaturesInfo indicates all features are continuous.
+//    boostingStrategy.treeStrategy.categoricalFeaturesInfo = Map[Int, Int]()
+//
+//    val model = GradientBoostedTrees.train(training, boostingStrategy)
+//
+//
+//    // Evaluate model on test instances and compute test error
+//    val labelAndPreds = test.map { point =>
+//      val prediction = model.predict(point.features)
+//      (prediction, point.label)
+//    }
+//
+//    labelAndPreds.foreach(println)
+//
+//    // Get evaluation metrics.
+//    val metrics = new BinaryClassificationMetrics(labelAndPreds)
+//    val auROC = metrics.areaUnderROC()
+//
+//    println("Area under ROC = " + auROC)
 
 
 
