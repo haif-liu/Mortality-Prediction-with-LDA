@@ -1,0 +1,3 @@
+--This will generate a PATIENT.csv file
+
+\copy (WITH tmp as (SELECT adm.subject_id AS subject_id, adm.hadm_id AS hadm_id, admittime, dischtime, adm.deathtime,pat.gender AS gender, pat.dob AS dob, pat.dod AS dod, ROW_NUMBER() OVER (PARTITION BY hadm_id ORDER BY admittime DESC) AS mostrecent FROM admissions adm INNER JOIN patients pat ON adm.subject_id = pat.subject_id WHERE lower(diagnosis) NOT LIKE '%organ donor%' AND extract(YEAR FROM admittime) - extract(YEAR FROM dob) > 15 AND HAS_CHARTEVENTS_DATA = 1) SELECT subject_id AS SUBJECT_ID, gender AS GENDER, dob AS DOB, dod AS DOD, hadm_id AS HADM_ID , deathtime AS DEATHTIME FROM tmp) TO 'PATIENT.csv' DELIMITER ',' CSV HEADER
